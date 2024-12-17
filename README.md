@@ -6,7 +6,7 @@ A simple and visually appealing Tic Tac Toe game implemented using HTML, CSS, an
 ![Tic Tac Toe Game Screenshot](./screenshot.png)
 
 ## Live Demo
-[Click here to play the game](http://127.0.0.1:5500/index.html))
+[Click here to play the game]https://jawadabbasi14.github.io/Tic-Tac-Toe-Game/
 
 ## Features
 - Interactive and responsive design.
