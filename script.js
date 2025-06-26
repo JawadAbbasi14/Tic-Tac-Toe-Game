@@ -5,6 +5,9 @@ let newGamebtn = document.querySelector("#new-btn");
 let msgcontanier = document.querySelector(".msg-container");
 let massage = document.querySelector("#massage");
 
+// New DOM element for the splash screen
+let splashScreen = document.querySelector('#splash-screen');
+
 // New LLM-related DOM elements
 let getInsightBtn = document.querySelector("#get-insight-btn");
 let getFactBtn = document.querySelector("#get-fact-btn");
@@ -67,19 +70,13 @@ boxes.forEach((box) => {
         // Check for a winner after each move
         const winner = checkWinner();
 
-        // If there's a winner, show the winner message
+        // If there's a winner, show the winner message and enable insight button
         if (winner) {
             showWinner(winner);
-            // After a win, disable the insight button to prevent further moves
-            // This is already handled by showWinner calling disableBoxes()
+            getInsightBtn.disabled = false;
         } else if (count === 9) {
             // If all 9 boxes are filled and no winner, it's a tie
             showTie();
-            // After a tie, disable the insight button to prevent further moves
-            // This is already handled by showTie calling disableBoxes()
-        }
-        // Enable insight button after a game ends (win or tie)
-        if (winner || count === 9) {
             getInsightBtn.disabled = false;
         }
     });
@@ -112,7 +109,7 @@ const enableBoxes = () => {
 const showWinner = (winner) => {
     massage.innerText = `Congratulations 🎉 Winner is ${winner}`;
     msgcontanier.classList.remove("hide");
-    disableBoxes(); // <--- This is what stops the game
+    disableBoxes(); // This stops further game play
 };
 
 /**
@@ -121,7 +118,7 @@ const showWinner = (winner) => {
 const showTie = () => {
     massage.innerText = `It's a Tie! 🤝`;
     msgcontanier.classList.remove("hide");
-    disableBoxes(); // <--- This is what stops the game
+    disableBoxes(); // This stops further game play
 };
 
 /**
@@ -212,3 +209,12 @@ getFactBtn.addEventListener('click', async () => {
     const fact = await callGeminiAPI(prompt);
     llmOutputDiv.innerHTML = `<p>${fact}</p>`;
 });
+
+// --- SPLASH SCREEN LOGIC ---
+// Hide the splash screen after a few seconds
+// The 2500ms (2.5 seconds) includes the 1.5s transition time from CSS
+if (splashScreen) {
+    setTimeout(() => {
+        splashScreen.classList.add('hide');
+    }, 2500);
+}
