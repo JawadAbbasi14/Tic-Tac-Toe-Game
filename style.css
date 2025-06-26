@@ -1,0 +1,269 @@
+/* General Reset & Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif; /* Apply Inter font */
+}
+
+body {
+    background: linear-gradient(135deg, #008080 0%, #004d4d 100%); /* Deeper teal gradient */
+    color: #e0f2f1; /* Lighter text color for contrast */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    text-align: center;
+    padding: 1rem; /* Add some padding around the edges */
+    overflow: hidden; /* Prevent body scroll if content slightly overflows */
+}
+
+/* Main Container for the Game */
+main {
+    background-color: rgba(0, 0, 0, 0.4); /* Slightly transparent dark background */
+    border-radius: 1.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); /* Stronger shadow for depth */
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem; /* Consistent spacing */
+    max-width: 90%; /* Limit max width for larger screens */
+    width: 100%; /* Ensure it takes full width on smaller screens */
+}
+
+h1 {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    color: #a7ffeb; /* Vibrant teal for the title */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Game Board Container */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* No explicit height here, let game content define it */
+}
+
+.game {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem; /* Slightly smaller gap for a tighter look */
+    width: clamp(250px, 60vmin, 500px); /* Responsive width: min 250px, 60% of viewport min, max 500px */
+    height: clamp(250px, 60vmin, 500px); /* Same for height */
+    background-color: #1a1a1a; /* Darker background for the game grid */
+    border-radius: 1rem;
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.6); /* Inner shadow for depth */
+    padding: 0.75rem; /* Padding inside the game grid */
+}
+
+/* Individual Game Boxes */
+.box {
+    height: calc((clamp(250px, 60vmin, 500px) - 2 * 0.75rem - 2 * 0.75rem) / 3); /* Dynamic height calculation based on game container */
+    width: calc((clamp(250px, 60vmin, 500px) - 2 * 0.75rem - 2 * 0.75rem) / 3); /* Dynamic width calculation */
+    border-radius: 0.75rem; /* Slightly less rounded */
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), inset 0 0 5px rgba(255, 255, 255, 0.1); /* Subtle 3D effect */
+    font-size: clamp(3rem, 8vmin, 6rem); /* Responsive font size */
+    color: #f4a261; /* Muted Orange */
+    background-color: #2a2a2a; /* Dark Grey */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease-out; /* Smoother transition */
+    font-weight: 700; /* Bold for symbols */
+}
+
+.box:hover:not(:disabled) {
+    background-color: #383838; /* Lighter on hover */
+    transform: translateY(-2px); /* Slight lift */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.box:active:not(:disabled) {
+    transform: translateY(1px); /* Slight press effect */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.box:disabled {
+    cursor: not-allowed;
+    opacity: 0.7; /* Slightly faded when disabled */
+}
+
+/* Buttons */
+button {
+    padding: 0.9rem 1.8rem; /* Slightly adjusted padding */
+    font-size: 1.1rem; /* Slightly smaller font for buttons */
+    font-weight: bold;
+    background: linear-gradient(180deg, #3f51b5 0%, #283593 100%); /* Blue gradient */
+    color: #ffffff;
+    border-radius: 2rem; /* Pill-shaped buttons */
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    text-transform: uppercase; /* Uppercase text */
+    letter-spacing: 1px;
+    display: inline-flex; /* Use flex for icon alignment */
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem; /* Space between text and sparkle */
+}
+
+button:hover {
+    background: linear-gradient(180deg, #42a5f5 0%, #1976d2 100%); /* Lighter blue on hover */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+    transform: translateY(-2px); /* Slight lift */
+}
+
+button:active {
+    transform: translateY(0); /* Press effect */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Message Container */
+.msg-container {
+    display: flex;
+    flex-direction: column; /* Stack message and button */
+    justify-content: center;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    margin-bottom: 2rem; /* Space above the game */
+    border-radius: 1rem;
+    background-color: rgba(0, 0, 0, 0.75); /* Darker, more opaque background */
+    box-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.6); /* More prominent shadow */
+    width: clamp(280px, 80%, 600px); /* Responsive width for message box */
+    transform: translateY(-20px); /* Initial subtle animation */
+    opacity: 0;
+    transition: all 0.5s ease-out;
+    gap: 1rem; /* Space between message and button */
+}
+
+.msg-container.hide {
+    opacity: 0;
+    transform: translateY(-20px);
+    pointer-events: none; /* Make it unclickable when hidden */
+    position: absolute; /* Take out of flow when hidden */
+}
+
+.msg-container:not(.hide) {
+    opacity: 1;
+    transform: translateY(0);
+    position: static; /* Bring back to flow when visible */
+}
+
+
+#massage {
+    color: #ffcc80; /* Brighter, warm orange */
+    font-size: 2.5rem; /* Larger font size for impact */
+    font-weight: 700;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+#new-btn {
+    margin-top: 0; /* Remove extra margin */
+}
+
+/* LLM Output Area */
+.llm-output-container {
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 1rem;
+    padding: 1rem 1.5rem;
+    margin-top: 2rem;
+    width: clamp(280px, 90%, 700px);
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: #b3e0dc; /* Light teal */
+    text-align: left;
+    line-height: 1.5;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.llm-output-container p {
+    margin: 0;
+    padding: 0;
+}
+
+.llm-output-container.loading {
+    color: #81d4fa; /* Light blue for loading */
+    font-style: italic;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.5rem;
+    }
+
+    .game {
+        width: clamp(200px, 75vmin, 400px);
+        height: clamp(200px, 75vmin, 400px);
+    }
+
+    .box {
+        font-size: clamp(2.5rem, 7vmin, 5rem);
+    }
+
+    button {
+        font-size: 1rem;
+        padding: 0.8rem 1.5rem;
+    }
+
+    #massage {
+        font-size: 2rem;
+    }
+
+    main {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 2rem;
+    }
+
+    .game {
+        width: clamp(180px, 85vmin, 350px);
+        height: clamp(180px, 85vmin, 350px);
+        gap: 0.5rem;
+    }
+
+    .box {
+        font-size: clamp(2rem, 6vmin, 4rem);
+        height: calc((clamp(180px, 85vmin, 350px) - 2 * 0.5rem - 2 * 0.5rem) / 3);
+        width: calc((clamp(180px, 85vmin, 350px) - 2 * 0.5rem - 2 * 0.5rem) / 3);
+    }
+
+    button {
+        font-size: 0.9rem;
+        padding: 0.7rem 1.3rem;
+    }
+
+    #massage {
+        font-size: 1.25rem;
+    }
+
+    main {
+        padding: 1rem;
+        gap: 1.5rem;
+    }
+
+    .llm-output-container {
+        font-size: 0.9rem;
+        padding: 0.8rem 1rem;
+    }
+}
