@@ -16,7 +16,9 @@ body {
     min-height: 100vh;
     text-align: center;
     padding: 1rem; /* Add some padding around the edges */
-    overflow: hidden; /* Prevent body scroll if content slightly overflows */
+    /* *** CHANGE FOR SCROLLING *** */
+    /* Removed 'overflow: hidden;' to allow natural scrolling */
+    overflow-y: auto; /* Allow vertical scrolling if content overflows */
 }
 
 /* Main Container for the Game */
