@@ -16,9 +16,32 @@ body {
     min-height: 100vh;
     text-align: center;
     padding: 1rem; /* Add some padding around the edges */
-    /* *** CHANGE FOR SCROLLING *** */
-    /* Removed 'overflow: hidden;' to allow natural scrolling */
     overflow-y: auto; /* Allow vertical scrolling if content overflows */
+}
+
+/* SPLASH SCREEN STYLES */
+#splash-screen {
+    position: fixed; /* Fixes it to the viewport */
+    top: 0;
+    left: 0;
+    width: 100vw; /* Full viewport width */
+    height: 100vh; /* Full viewport height */
+    background-color: #000; /* Solid black background */
+    color: #fff; /* White text */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 4rem; /* Larger font size for the splash text */
+    font-weight: 700; /* Bold font weight */
+    z-index: 1000; /* Ensures it's on top of all other content */
+    opacity: 1; /* Initially fully visible */
+    transition: opacity 1.5s ease-out; /* Smooth fade-out transition */
+    text-shadow: 2px 2px 8px rgba(0, 255, 255, 0.6); /* Subtle glow */
+}
+
+#splash-screen.hide {
+    opacity: 0; /* Fades out */
+    pointer-events: none; /* Makes it unclickable after fading */
 }
 
 /* Main Container for the Game */
@@ -33,6 +56,8 @@ main {
     gap: 2rem; /* Consistent spacing */
     max-width: 90%; /* Limit max width for larger screens */
     width: 100%; /* Ensure it takes full width on smaller screens */
+    position: relative; /* Needed for z-index context if you ever have things layered */
+    z-index: 1; /* Ensure game content is below splash screen */
 }
 
 h1 {
@@ -231,6 +256,10 @@ button:disabled {
     main {
         padding: 1.5rem;
     }
+
+    #splash-screen {
+        font-size: 3rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -267,5 +296,9 @@ button:disabled {
     .llm-output-container {
         font-size: 0.9rem;
         padding: 0.8rem 1rem;
+    }
+
+    #splash-screen {
+        font-size: 2rem;
     }
 }
