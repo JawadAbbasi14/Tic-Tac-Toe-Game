@@ -70,11 +70,17 @@ boxes.forEach((box) => {
         // If there's a winner, show the winner message
         if (winner) {
             showWinner(winner);
-            getInsightBtn.disabled = false; // Enable insight button after win
+            // After a win, disable the insight button to prevent further moves
+            // This is already handled by showWinner calling disableBoxes()
         } else if (count === 9) {
             // If all 9 boxes are filled and no winner, it's a tie
             showTie();
-            getInsightBtn.disabled = false; // Enable insight button after tie
+            // After a tie, disable the insight button to prevent further moves
+            // This is already handled by showTie calling disableBoxes()
+        }
+        // Enable insight button after a game ends (win or tie)
+        if (winner || count === 9) {
+            getInsightBtn.disabled = false;
         }
     });
 });
@@ -106,7 +112,7 @@ const enableBoxes = () => {
 const showWinner = (winner) => {
     massage.innerText = `Congratulations 🎉 Winner is ${winner}`;
     msgcontanier.classList.remove("hide");
-    disableBoxes();
+    disableBoxes(); // <--- This is what stops the game
 };
 
 /**
@@ -115,7 +121,7 @@ const showWinner = (winner) => {
 const showTie = () => {
     massage.innerText = `It's a Tie! 🤝`;
     msgcontanier.classList.remove("hide");
-    disableBoxes();
+    disableBoxes(); // <--- This is what stops the game
 };
 
 /**
