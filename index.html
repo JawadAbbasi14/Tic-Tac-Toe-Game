@@ -3,18 +3,293 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tic Tac Toe Game</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Ultimate Tic Tac Toe Game</title>
+    <!-- Google Fonts - Inter for a clean modern look -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* General Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif; /* Apply Inter font */
+        }
+
+        body {
+            background: linear-gradient(135deg, #008080 0%, #004d4d 100%); /* Deeper teal gradient */
+            color: #e0f2f1; /* Lighter text color for contrast */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 1rem; /* Add some padding around the edges */
+            overflow: hidden; /* Prevent body scroll if content slightly overflows */
+        }
+
+        /* Main Container for the Game */
+        main {
+            background-color: rgba(0, 0, 0, 0.4); /* Slightly transparent dark background */
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); /* Stronger shadow for depth */
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem; /* Consistent spacing */
+            max-width: 90%; /* Limit max width for larger screens */
+            width: 100%; /* Ensure it takes full width on smaller screens */
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: #a7ffeb; /* Vibrant teal for the title */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Game Board Container */
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* No explicit height here, let game content define it */
+        }
+
+        .game {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem; /* Slightly smaller gap for a tighter look */
+            width: clamp(250px, 60vmin, 500px); /* Responsive width: min 250px, 60% of viewport min, max 500px */
+            height: clamp(250px, 60vmin, 500px); /* Same for height */
+            background-color: #1a1a1a; /* Darker background for the game grid */
+            border-radius: 1rem;
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.6); /* Inner shadow for depth */
+            padding: 0.75rem; /* Padding inside the game grid */
+        }
+
+        /* Individual Game Boxes */
+        .box {
+            height: calc((clamp(250px, 60vmin, 500px) - 2 * 0.75rem - 2 * 0.75rem) / 3); /* Dynamic height calculation based on game container */
+            width: calc((clamp(250px, 60vmin, 500px) - 2 * 0.75rem - 2 * 0.75rem) / 3); /* Dynamic width calculation */
+            border-radius: 0.75rem; /* Slightly less rounded */
+            border: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), inset 0 0 5px rgba(255, 255, 255, 0.1); /* Subtle 3D effect */
+            font-size: clamp(3rem, 8vmin, 6rem); /* Responsive font size */
+            color: #f4a261; /* Muted Orange */
+            background-color: #2a2a2a; /* Dark Grey */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease-out; /* Smoother transition */
+            font-weight: 700; /* Bold for symbols */
+        }
+
+        .box:hover:not(:disabled) {
+            background-color: #383838; /* Lighter on hover */
+            transform: translateY(-2px); /* Slight lift */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .box:active:not(:disabled) {
+            transform: translateY(1px); /* Slight press effect */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+        }
+
+        .box:disabled {
+            cursor: not-allowed;
+            opacity: 0.7; /* Slightly faded when disabled */
+        }
+
+        /* Buttons */
+        button {
+            padding: 0.9rem 1.8rem; /* Slightly adjusted padding */
+            font-size: 1.1rem; /* Slightly smaller font for buttons */
+            font-weight: bold;
+            background: linear-gradient(180deg, #3f51b5 0%, #283593 100%); /* Blue gradient */
+            color: #ffffff;
+            border-radius: 2rem; /* Pill-shaped buttons */
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            text-transform: uppercase; /* Uppercase text */
+            letter-spacing: 1px;
+            display: inline-flex; /* Use flex for icon alignment */
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem; /* Space between text and sparkle */
+        }
+
+        button:hover {
+            background: linear-gradient(180deg, #42a5f5 0%, #1976d2 100%); /* Lighter blue on hover */
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+            transform: translateY(-2px); /* Slight lift */
+        }
+
+        button:active {
+            transform: translateY(0); /* Press effect */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Message Container */
+        .msg-container {
+            display: flex;
+            flex-direction: column; /* Stack message and button */
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem; /* Space above the game */
+            border-radius: 1rem;
+            background-color: rgba(0, 0, 0, 0.75); /* Darker, more opaque background */
+            box-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.6); /* More prominent shadow */
+            width: clamp(280px, 80%, 600px); /* Responsive width for message box */
+            transform: translateY(-20px); /* Initial subtle animation */
+            opacity: 0;
+            transition: all 0.5s ease-out;
+            gap: 1rem; /* Space between message and button */
+        }
+
+        .msg-container.hide {
+            opacity: 0;
+            transform: translateY(-20px);
+            pointer-events: none; /* Make it unclickable when hidden */
+            position: absolute; /* Take out of flow when hidden */
+        }
+
+        .msg-container:not(.hide) {
+            opacity: 1;
+            transform: translateY(0);
+            position: static; /* Bring back to flow when visible */
+        }
+
+
+        #massage {
+            color: #ffcc80; /* Brighter, warm orange */
+            font-size: 2.5rem; /* Larger font size for impact */
+            font-weight: 700;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        #new-btn {
+            margin-top: 0; /* Remove extra margin */
+        }
+
+        /* LLM Output Area */
+        .llm-output-container {
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 1rem;
+            padding: 1rem 1.5rem;
+            margin-top: 2rem;
+            width: clamp(280px, 90%, 700px);
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: #b3e0dc; /* Light teal */
+            text-align: left;
+            line-height: 1.5;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .llm-output-container p {
+            margin: 0;
+            padding: 0;
+        }
+
+        .llm-output-container.loading {
+            color: #81d4fa; /* Light blue for loading */
+            font-style: italic;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .game {
+                width: clamp(200px, 75vmin, 400px);
+                height: clamp(200px, 75vmin, 400px);
+            }
+
+            .box {
+                font-size: clamp(2.5rem, 7vmin, 5rem);
+            }
+
+            button {
+                font-size: 1rem;
+                padding: 0.8rem 1.5rem;
+            }
+
+            #massage {
+                font-size: 2rem;
+            }
+
+            main {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .game {
+                width: clamp(180px, 85vmin, 350px);
+                height: clamp(180px, 85vmin, 350px);
+                gap: 0.5rem;
+            }
+
+            .box {
+                font-size: clamp(2rem, 6vmin, 4rem);
+                height: calc((clamp(180px, 85vmin, 350px) - 2 * 0.5rem - 2 * 0.5rem) / 3);
+                width: calc((clamp(180px, 85vmin, 350px) - 2 * 0.5rem - 2 * 0.5rem) / 3);
+            }
+
+            button {
+                font-size: 0.9rem;
+                padding: 0.7rem 1.3rem;
+            }
+
+            #massage {
+                font-size: 1.25rem;
+            }
+
+            main {
+                padding: 1rem;
+                gap: 1.5rem;
+            }
+
+            .llm-output-container {
+                font-size: 0.9rem;
+                padding: 0.8rem 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="msg-container">
-        <p id="message"></p>
+    <!-- Message Container: hidden by default, shown on win/tie -->
+    <div class="msg-container hide">
+        <p id="massage"></p>
         <button id="new-btn">New Game</button>
     </div>
+
     <main>
         <h1>Tic Tac Toe</h1>
         <div class="container">
             <div class="game">
+                <!-- Game Boxes (Buttons) -->
                 <button class="box"></button>
                 <button class="box"></button>
                 <button class="box"></button>
@@ -26,10 +301,232 @@
                 <button class="box"></button>
             </div>
         </div>
-        <br>
+        <!-- Reset Game Button -->
         <button id="reset">Reset Game</button>
+        
+        <!-- New LLM Buttons -->
+        <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+            <button id="get-insight-btn" disabled>Get Game Insight ✨</button>
+            <button id="get-fact-btn">Tic Tac Toe Fact ✨</button>
+        </div>
+
+        <!-- LLM Output Display Area -->
+        <div id="llm-output" class="llm-output-container">
+            <p>AI insights will appear here!</p>
+        </div>
     </main>
 
-    <script src="script.js"></script>
+    <script>
+        // Select all necessary DOM elements
+        let boxes = document.querySelectorAll('.box');
+        let reset = document.querySelector('#reset');
+        let newGamebtn = document.querySelector("#new-btn");
+        let msgcontanier = document.querySelector(".msg-container");
+        let massage = document.querySelector("#massage");
+
+        // New LLM-related DOM elements
+        let getInsightBtn = document.querySelector("#get-insight-btn");
+        let getFactBtn = document.querySelector("#get-fact-btn");
+        let llmOutputDiv = document.querySelector("#llm-output");
+
+        // Game state variables
+        let turn0 = true; // true for player 0 (💹), false for player X (❌)
+        let count = 0;    // To track the number of filled boxes for tie game detection
+
+        // All possible winning patterns
+        const winningPatterns = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6]
+        ];
+
+        /**
+         * Resets the game to its initial state.
+         * Clears all boxes, enables them, hides the message container,
+         * and resets the turn and move count. Disables the insight button.
+         */
+        const resetGame = () => {
+            turn0 = true; // Player 0 starts
+            count = 0;    // Reset move counter
+            enableBoxes(); // Make all boxes playable
+            msgcontanier.classList.add('hide'); // Hide win/tie message
+            massage.innerText = ""; // Clear any previous message
+            getInsightBtn.disabled = true; // Disable insight button on reset
+            llmOutputDiv.innerHTML = "<p>AI insights will appear here!</p>"; // Clear LLM output
+            llmOutputDiv.classList.remove('loading');
+        };
+
+        // Add event listeners to each game box
+        boxes.forEach((box) => {
+            box.addEventListener('click', () => {
+                // If the box is already filled, do nothing
+                if (box.innerText !== "") {
+                    return;
+                }
+
+                // Place the appropriate symbol based on the current turn
+                if (turn0) {
+                    box.innerText = "�";
+                    box.style.color = '#f4a261';
+                    turn0 = false;
+                } else {
+                    box.innerText = "❌";
+                    box.style.color = '#ef4444';
+                    turn0 = true;
+                }
+
+                box.disabled = true;
+                count++;
+
+                // Check for a winner after each move
+                const winner = checkWinner();
+
+                // If there's a winner, show the winner message
+                if (winner) {
+                    showWinner(winner);
+                    getInsightBtn.disabled = false; // Enable insight button after win
+                } else if (count === 9) {
+                    // If all 9 boxes are filled and no winner, it's a tie
+                    showTie();
+                    getInsightBtn.disabled = false; // Enable insight button after tie
+                }
+            });
+        });
+
+        /**
+         * Disables all game boxes, preventing further moves.
+         */
+        const disableBoxes = () => {
+            boxes.forEach(box => {
+                box.disabled = true;
+            });
+        };
+
+        /**
+         * Enables all game boxes and clears their content.
+         */
+        const enableBoxes = () => {
+            boxes.forEach(box => {
+                box.disabled = false;
+                box.innerText = "";
+                box.style.color = '';
+            });
+        };
+
+        /**
+         * Displays the winner message and disables the game board.
+         * @param {string} winner - The symbol of the winning player (e.g., "💹" or "❌").
+         */
+        const showWinner = (winner) => {
+            massage.innerText = `Congratulations 🎉 Winner is ${winner}`;
+            msgcontanier.classList.remove("hide");
+            disableBoxes();
+        };
+
+        /**
+         * Displays the tie game message and disables the game board.
+         */
+        const showTie = () => {
+            massage.innerText = `It's a Tie! 🤝`;
+            msgcontanier.classList.remove("hide");
+            disableBoxes();
+        };
+
+        /**
+         * Checks if there's a winner based on the current state of the board.
+         * @returns {string|null} The symbol of the winner ("💹" or "❌") if found, otherwise null.
+         */
+        const checkWinner = () => {
+            for (let pattern of winningPatterns) {
+                let pos1val = boxes[pattern[0]].innerText;
+                let pos2val = boxes[pattern[1]].innerText;
+                let pos3val = boxes[pattern[2]].innerText;
+
+                if (pos1val !== "" && pos1val === pos2val && pos2val === pos3val) {
+                    return pos1val;
+                }
+            }
+            return null;
+        };
+
+        // Add event listeners for the "New Game" and "Reset Game" buttons
+        newGamebtn.addEventListener('click', resetGame);
+        reset.addEventListener('click', resetGame);
+
+        // --- Gemini API Integration ---
+
+        /**
+         * Calls the Gemini API with a given prompt.
+         * @param {string} promptText The text prompt for the LLM.
+         * @returns {Promise<string>} The generated text from the LLM.
+         */
+        async function callGeminiAPI(promptText) {
+            llmOutputDiv.classList.add('loading');
+            llmOutputDiv.innerHTML = '<p>Thinking...</p>'; // Loading indicator
+
+            let chatHistory = [];
+            chatHistory.push({ role: "user", parts: [{ text: promptText }] });
+            const payload = { contents: chatHistory };
+            const apiKey = ""; // Canvas will automatically provide the API key
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    return result.candidates[0].content.parts[0].text;
+                } else {
+                    return "No meaningful response from AI.";
+                }
+            } catch (error) {
+                console.error("Error calling Gemini API:", error);
+                return "Failed to get AI response. Please try again.";
+            } finally {
+                llmOutputDiv.classList.remove('loading');
+            }
+        }
+
+        /**
+         * Generates an insight about the current Tic Tac Toe game.
+         * This button is enabled only after a game concludes (win or tie).
+         */
+        getInsightBtn.addEventListener('click', async () => {
+            const boardState = Array.from(boxes).map(box => box.innerText === "" ? "_" : box.innerText).join('');
+            const gameResult = massage.innerText;
+
+            const prompt = `Analyze this Tic Tac Toe game. The final board state (read left to right, top to bottom, '_' for empty) is: "${boardState}". The game result was: "${gameResult}". Provide a short, insightful, and slightly informal comment on the game.`;
+
+            const insight = await callGeminiAPI(prompt);
+            llmOutputDiv.innerHTML = `<p>${insight}</p>`;
+        });
+
+        /**
+         * Generates a fun fact about Tic Tac Toe.
+         * This button can be clicked at any time.
+         */
+        getFactBtn.addEventListener('click', async () => {
+            const prompt = "Tell me a fun and interesting fact about the game Tic Tac Toe, keep it concise and engaging.";
+            const fact = await callGeminiAPI(prompt);
+            llmOutputDiv.innerHTML = `<p>${fact}</p>`;
+        });
+
+    </script>
 </body>
 </html>
+�
