@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ultimate Tic Tac Toe Game</title>
-    <!-- Google Fonts - Inter for a clean modern look -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Link to the external stylesheet -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Message Container: hidden by default, shown on win/tie -->
+    <div id="splash-screen">
+        <p>Made By Jawad</p>
+    </div>
     <div class="msg-container hide">
         <p id="massage"></p>
         <button id="new-btn">New Game</button>
@@ -20,7 +20,6 @@
         <h1>Tic Tac Toe</h1>
         <div class="container">
             <div class="game">
-                <!-- Game Boxes (Buttons) -->
                 <button class="box"></button>
                 <button class="box"></button>
                 <button class="box"></button>
@@ -32,22 +31,18 @@
                 <button class="box"></button>
             </div>
         </div>
-        <!-- Reset Game Button -->
         <button id="reset">Reset Game</button>
         
-        <!-- New LLM Buttons -->
         <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
             <button id="get-insight-btn" disabled>Get Game Insight ✨</button>
             <button id="get-fact-btn">Tic Tac Toe Fact ✨</button>
         </div>
 
-        <!-- LLM Output Display Area -->
         <div id="llm-output" class="llm-output-container">
             <p>AI insights will appear here!</p>
         </div>
     </main>
 
-    <!-- Link to the external JavaScript file -->
     <script src="script.js"></script>
 </body>
 </html>
